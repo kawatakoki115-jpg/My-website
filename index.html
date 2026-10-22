@@ -1,0 +1,962 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>老後資金シミュレーター</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: white;
+    color: #333;
+    text-align: center;
+    font-family: sans-serif;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    overflow-wrap: anywhere;
+}
+
+.sub-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.desc-text {
+    font-size: 14px;
+    color: #555;
+    margin: 4px 0 24px;
+}
+
+.screen {
+    display: none;
+}
+
+#title-screen {
+    display: block;
+}
+
+.title-screen {
+    max-width: 420px;
+    margin: auto;
+    padding-top: 30px;
+}
+
+.title-icon {
+    font-size: 55px;
+}
+
+.title-main {
+    font-size: 30px;
+    color: #1976D2;
+}
+
+.simple-box,
+.assumption-box,
+.disclaimer {
+    max-width: 340px;
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: left;
+}
+
+.simple-box {
+    background: #f5f9ff;
+    border: 2px solid #bbdefb;
+}
+
+.simple-box p {
+    margin: 8px 0;
+}
+
+.simple-warning {
+    color: #666;
+    font-size: 12px;
+}
+
+.assumption-box {
+    background: #f7f7f7;
+    color: #555;
+}
+
+.disclaimer {
+    background: #fafafa;
+    color: #777;
+    font-size: 11px;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.start-btn,
+.type-btn,
+.action-btn {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: 12px auto;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 9px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.start-btn {
+    background: #1976D2;
+    color: white;
+    font-size: 20px;
+    padding: 16px;
+}
+
+.type1 {
+    background: lightgreen;
+    color: black;
+}
+
+.type2 {
+    background: skyblue;
+    color: black;
+}
+
+.type3 {
+    background: pink;
+    color: black;
+}
+
+.action-btn {
+    background: #333;
+    color: white;
+    margin-top: 30px;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.input-group {
+    max-width: 320px;
+    margin: 0 auto 24px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 18px;
+    background: white;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1976D2;
+}
+
+.note {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.result-card {
+    max-width: 360px;
+    margin: 0 auto 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+.card-1 {
+    border: 2px solid lightgreen;
+}
+
+.card-2 {
+    border: 2px solid skyblue;
+}
+
+.card-3 {
+    border: 2px solid pink;
+}
+
+.result-title {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    color: #ff5722;
+    font-size: 27px;
+    font-weight: bold;
+    margin: 0 0 20px;
+    overflow-wrap: anywhere;
+}
+
+.info-btn {
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    background: #e0e0e0;
+}
+
+.back-link {
+    display: inline-block;
+    margin: 15px 0;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    padding: 20px;
+    background: rgba(0,0,0,.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 340px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.modal-close {
+    display: block;
+    margin: 15px auto 0;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+}
+
+@media (max-width: 400px) {
+    body {
+        padding: 15px;
+    }
+
+    .title-main {
+        font-size: 27px;
+    }
+
+    .result-value {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 画面0：タイトル -->
+<div id="title-screen" class="screen title-screen">
+    <div class="title-icon">🏦</div>
+
+    <h1 class="title-main">
+        老後資金<br>シミュレーター
+    </h1>
+
+    <div class="simple-box">
+        <p><strong>
+            将来の老後資金について<br>
+            簡単にシミュレーションしてみよう！
+        </strong></p>
+
+        <p>
+            年齢・給与・生活費などから、
+            老後の資金不足額と毎月の積立額を計算します。
+        </p>
+
+        <p class="simple-warning">
+            ※年金と投資を簡略化して計算する研究用ツールです。
+        </p>
+    </div>
+
+    <button class="start-btn"
+        onclick="showScreen('top-screen')">
+        ▶ スタート
+    </button>
+
+    <div class="disclaimer">
+        <strong>主な計算条件</strong><br>
+        ・年金加入は20歳から60歳までと仮定<br>
+        ・65歳から90歳まで生活すると仮定<br>
+        ・物価上昇や将来の年金改定は考慮しない<br>
+        ・投資の想定利回りは年4%
+    </div>
+</div>
+
+<!-- 画面1：区分選択 -->
+<div id="top-screen" class="screen">
+    <h1 style="color:#1976D2">
+        老後資金シミュレーター
+    </h1>
+
+    <p class="sub-title">
+        被保険者区分を選択してください
+    </p>
+
+    <button class="type-btn type1"
+        onclick="showScreen('type1-screen')">
+        第1号被保険者
+    </button>
+    <p class="desc-text">自営業・フリーランスなど</p>
+
+    <button class="type-btn type2"
+        onclick="showScreen('type2-screen')">
+        第2号被保険者
+    </button>
+    <p class="desc-text">会社員・公務員など</p>
+
+    <button class="type-btn type3"
+        onclick="showScreen('type3-screen')">
+        第3号被保険者
+    </button>
+    <p class="desc-text">第2号被保険者に扶養される配偶者</p>
+
+    <span class="back-link"
+        onclick="showScreen('title-screen')">
+        ← タイトルに戻る
+    </span>
+</div>
+
+<!-- 画面2：第1号 -->
+<div id="type1-screen" class="screen">
+    <h1 style="color:green">第1号被保険者プラン</h1>
+
+    <div class="input-group">
+        <label for="age1">現在の年齢（歳）</label>
+        <input type="number" id="age1"
+            min="15" max="60" value="18">
+    </div>
+
+    <div class="input-group">
+        <label for="living-cost1">
+            老後の毎月の生活費（万円）
+        </label>
+        <input type="number" id="living-cost1"
+            min="1" max="100" value="17">
+    </div>
+
+    <div class="assumption-box">
+        <strong>年金の仮定</strong><br>
+        20歳以降、60歳まで国民年金の加入期間が
+        続くと仮定します。過去の加入実績は入力に含めず、
+        今後の加入期間のみを簡易的に推計します。
+    </div>
+
+    <button class="action-btn" onclick="calculate(1)">
+        シミュレーションする
+    </button>
+
+    <span class="back-link"
+        onclick="showScreen('top-screen')">
+        ← 区分選択に戻る
+    </span>
+</div>
+
+<!-- 画面3：第2号 -->
+<div id="type2-screen" class="screen">
+    <h1 style="color:#2196F3">第2号被保険者プラン</h1>
+
+    <div class="input-group">
+        <label for="age2">現在の年齢（歳）</label>
+        <input type="number" id="age2"
+            min="15" max="60" value="18">
+    </div>
+
+    <div class="input-group">
+        <label for="salary2">
+            想定する額面月給（万円）
+        </label>
+        <input type="number" id="salary2"
+            min="1" max="200" value="17">
+
+        <p class="note">
+            税金や社会保険料が引かれる前の月給です。
+            まだ働いていない場合は、働き始める時点の
+            想定月給を入力してください。
+        </p>
+    </div>
+
+    <div class="input-group">
+        <label for="living-cost2">
+            老後の毎月の生活費（万円）
+        </label>
+        <input type="number" id="living-cost2"
+            min="1" max="100" value="17">
+    </div>
+
+    <div class="assumption-box">
+        <strong>年金の仮定</strong><br>
+        今後、60歳まで厚生年金に加入すると仮定します。<br>
+        45歳まで年1.5%昇給し、年間報酬は
+        月給14か月分とします。
+    </div>
+
+    <button class="action-btn" onclick="calculate(2)">
+        シミュレーションする
+    </button>
+
+    <span class="back-link"
+        onclick="showScreen('top-screen')">
+        ← 区分選択に戻る
+    </span>
+</div>
+
+<!-- 画面4：第3号 -->
+<div id="type3-screen" class="screen">
+    <h1 style="color:#D66A96">第3号被保険者プラン</h1>
+
+    <div class="input-group">
+        <label for="age3">現在の年齢（歳）</label>
+        <input type="number" id="age3"
+            min="15" max="60" value="18">
+    </div>
+
+    <div class="input-group">
+        <label for="living-cost3">
+            老後の毎月の生活費（万円）
+        </label>
+        <input type="number" id="living-cost3"
+            min="1" max="100" value="17">
+    </div>
+
+    <div class="assumption-box">
+        <strong>年金の仮定</strong><br>
+        今後の加入期間について、第3号被保険者として
+        基礎年金の対象期間に算入されると仮定します。
+        実際には第3号の資格要件を満たす必要があります。
+    </div>
+
+    <button class="action-btn" onclick="calculate(3)">
+        シミュレーションする
+    </button>
+
+    <span class="back-link"
+        onclick="showScreen('top-screen')">
+        ← 区分選択に戻る
+    </span>
+</div>
+
+<!-- 画面5：結果 -->
+<div id="result-screen" class="screen">
+    <h1 id="result-header">シミュレーション結果</h1>
+
+    <div id="result-card-box" class="result-card">
+        <p class="result-title">老後の総不足額</p>
+        <p class="result-value">
+            <span id="display-shortfall">0</span>万円
+        </p>
+
+        <p class="result-title">
+            65歳までに準備する毎月の積立額
+            <button class="info-btn"
+                onclick="toggleModal(true)">ⓘ</button>
+        </p>
+
+        <p class="result-value" style="color:#2196F3">
+            <span id="display-investment">0</span>円
+        </p>
+
+        <p class="note">
+            ※年利4%で運用できると仮定
+        </p>
+    </div>
+
+    <div id="result-assumptions" class="assumption-box"></div>
+
+    <div class="disclaimer">
+        <strong>この結果について</strong><br>
+        このツールは研究用の簡易試算です。
+        実際の年金額は過去の加入記録や報酬などで変わります。
+        また、物価上昇、税金、医療・介護費用、運用手数料、
+        投資収益の変動などは考慮していません。
+        結果を将来の受給額や投資成果の保証として
+        使用しないでください。
+    </div>
+
+    <div id="info-modal" class="modal"
+        onclick="closeModalByBackground(event)">
+        <div class="modal-content"
+            onclick="event.stopPropagation()">
+            <h3>💡 計算の裏側</h3>
+            <div id="modal-text"></div>
+            <button class="modal-close"
+                onclick="toggleModal(false)">
+                閉じる
+            </button>
+        </div>
+    </div>
+
+    <span id="back-to-input-btn" class="back-link">
+        ← 入力画面に戻る
+    </span>
+</div>
+
+<script>
+/* ==================================================
+   ① 画面制御モジュール
+================================================== */
+
+function showScreen(screenId) {
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.style.display = "none";
+    });
+
+    document.getElementById(screenId).style.display = "block";
+    window.scrollTo(0, 0);
+}
+
+function toggleModal(show) {
+    document.getElementById("info-modal").style.display =
+        show ? "flex" : "none";
+}
+
+function closeModalByBackground(event) {
+    if (event.target.id === "info-modal") {
+        toggleModal(false);
+    }
+}
+
+
+/* ==================================================
+   ② 入力検証モジュール
+================================================== */
+
+function readNumber(id, min, max, label) {
+    const element = document.getElementById(id);
+    const value = element.value.trim() === ""
+        ? NaN
+        : Number(element.value);
+
+    if (!Number.isFinite(value) || value < min || value > max) {
+        alert(label + "は" + min + "～" + max +
+            "の範囲で入力してください。");
+        element.focus();
+        return null;
+    }
+
+    return value;
+}
+
+function readInputs(type) {
+    const age = readNumber(
+        "age" + type, 15, 60, "年齢"
+    );
+    if (age === null) return null;
+
+    const livingCost = readNumber(
+        "living-cost" + type, 1, 100, "毎月の生活費"
+    );
+    if (livingCost === null) return null;
+
+    let salary = null;
+
+    if (type === 2) {
+        salary = readNumber(
+            "salary2", 1, 200, "額面月給"
+        );
+        if (salary === null) return null;
+    }
+
+    return {
+        type,
+        age,
+        livingCostYen: livingCost * 10000,
+        monthlySalaryYen: salary === null
+            ? null
+            : salary * 10000
+    };
+}
+
+
+/* ==================================================
+   ③ 年金計算モジュール
+   投資計算とは独立させる
+================================================== */
+
+const PENSION = {
+    basicAnnualFull: 847300,
+    contributionStartAge: 20,
+    contributionEndAge: 60,
+    monthsPerYear: 12,
+    employeeRate: 0.005481,
+    annualRaiseRate: 0.015,
+    raiseUntilAge: 45,
+    annualSalaryMonths: 14
+};
+
+/*
+ * 今後の基礎年金対象期間を簡易計算する。
+ *
+ * 20歳未満：20歳から60歳までの40年を想定
+ * 20歳以上：現在年齢から60歳までを想定
+ *
+ * 過去の加入記録は不明なので計算に含めない。
+ */
+function calculateBasicPension(currentAge) {
+    const startAge = Math.max(
+        currentAge,
+        PENSION.contributionStartAge
+    );
+
+    const coveredYears = Math.max(
+        0,
+        PENSION.contributionEndAge - startAge
+    );
+
+    const annualAmount =
+        PENSION.basicAnnualFull * coveredYears / 40;
+
+    return {
+        coveredYears,
+        annualAmount
+    };
+}
+
+/*
+ * 第2号の厚生年金報酬比例部分を簡易推計する。
+ *
+ * 入力された月給を基準に、想定加入期間中の報酬を計算。
+ * 実際の標準報酬月額・標準賞与額の記録とは異なる。
+ */
+function calculateEmployeePension(currentAge, initialSalary) {
+    const startAge = Math.max(
+        currentAge,
+        PENSION.contributionStartAge
+    );
+
+    let salary = initialSalary;
+    let totalReward = 0;
+    let workingYears = 0;
+
+    for (
+        let age = startAge;
+        age < PENSION.contributionEndAge;
+        age++
+    ) {
+        // 最初の年は入力月給を基準にし、以後昇給を反映
+        if (age > startAge && age <= PENSION.raiseUntilAge) {
+            salary *= 1 + PENSION.annualRaiseRate;
+        }
+
+        const annualReward =
+            salary * PENSION.annualSalaryMonths;
+
+        totalReward += annualReward;
+        workingYears++;
+    }
+
+    const workingMonths = workingYears * 12;
+
+    const averageRewardMonthly = workingMonths > 0
+        ? totalReward / workingMonths
+        : 0;
+
+    const annualPension =
+        averageRewardMonthly *
+        PENSION.employeeRate *
+        workingMonths;
+
+    return {
+        workingYears,
+        workingMonths,
+        averageRewardMonthly,
+        annualAmount: annualPension
+    };
+}
+
+/*
+ * 年金計算の入口。
+ * 区分ごとの計算結果をまとめて返す。
+ */
+function calculatePension(input) {
+    const basic = calculateBasicPension(input.age);
+
+    let employee = {
+        workingYears: 0,
+        workingMonths: 0,
+        averageRewardMonthly: 0,
+        annualAmount: 0
+    };
+
+    if (input.type === 2) {
+        employee = calculateEmployeePension(
+            input.age,
+            input.monthlySalaryYen
+        );
+    }
+
+    return {
+        basicAnnual: basic.annualAmount,
+        basicCoveredYears: basic.coveredYears,
+        employeeAnnual: employee.annualAmount,
+        employeeWorkingYears: employee.workingYears,
+        employeeAverageRewardMonthly:
+            employee.averageRewardMonthly,
+        totalAnnual:
+            basic.annualAmount + employee.annualAmount
+    };
+}
+
+
+/* ==================================================
+   ④ 老後の不足額計算モジュール
+================================================== */
+
+function calculateShortfall(monthlyCost, annualPension) {
+    const retirementStartAge = 65;
+    const assumedLifeExpectancy = 90;
+    const retirementYears =
+        assumedLifeExpectancy - retirementStartAge;
+
+    const totalExpenses =
+        monthlyCost * 12 * retirementYears;
+
+    const totalPension =
+        annualPension * retirementYears;
+
+    return {
+        retirementYears,
+        totalExpenses,
+        totalPension,
+        shortfall: Math.max(0, totalExpenses - totalPension)
+    };
+}
+
+
+/* ==================================================
+   ⑤ 投資計算モジュール
+   年金制度の計算はここに含めない
+================================================== */
+
+const INVESTMENT = {
+    annualRate: 0.04,
+    monthsPerYear: 12
+};
+
+/*
+ * 65歳時点で目標額を用意するための
+ * 毎月の積立額を逆算する。
+ *
+ * 月末に積み立てる前提の将来価値の式：
+ * FV = PMT * (((1+r)^n - 1) / r)
+ *
+ * PMT = FV * r / ((1+r)^n - 1)
+ */
+function calculateMonthlyInvestment(
+    targetAmount,
+    currentAge,
+    annualRate = INVESTMENT.annualRate
+) {
+    const retirementAge = 65;
+    const years = retirementAge - currentAge;
+
+    if (targetAmount <= 0) {
+        return {
+            years,
+            months: years * 12,
+            monthlyAmount: 0
+        };
+    }
+
+    if (years <= 0) {
+        return {
+            years,
+            months: 0,
+            monthlyAmount: targetAmount
+        };
+    }
+
+    const months = years * 12;
+    const monthlyRate = annualRate / 12;
+
+    const futureValueFactor =
+        (Math.pow(1 + monthlyRate, months) - 1) /
+        monthlyRate;
+
+    const monthlyAmount =
+        targetAmount / futureValueFactor;
+
+    return {
+        years,
+        months,
+        monthlyAmount
+    };
+}
+
+
+/* ==================================================
+   ⑥ 結果表示モジュール
+================================================== */
+
+function yen(value) {
+    return Math.round(value).toLocaleString("ja-JP");
+}
+
+function manYen(value) {
+    return (value / 10000).toLocaleString("ja-JP", {
+        maximumFractionDigits: 1
+    });
+}
+
+function renderResults(input, pension, shortfall, investment) {
+    const header = document.getElementById("result-header");
+    const card = document.getElementById("result-card-box");
+    const back = document.getElementById("back-to-input-btn");
+
+    const colors = {
+        1: "lightgreen",
+        2: "skyblue",
+        3: "pink"
+    };
+
+    header.style.color = colors[input.type];
+    card.className = "result-card card-" + input.type;
+
+    back.onclick = function() {
+        showScreen("type" + input.type + "-screen");
+    };
+
+    document.getElementById("display-shortfall").textContent =
+        manYen(shortfall.shortfall);
+
+    document.getElementById("display-investment").textContent =
+        yen(investment.monthlyAmount);
+
+    document.getElementById("result-assumptions").innerHTML = `
+        <strong>この結果の計算条件</strong><br>
+        老後の期間：65～90歳（${shortfall.retirementYears}年間）<br>
+        年間の想定年金額：約${manYen(pension.totalAnnual)}万円<br>
+        現在から65歳までの積立期間：${investment.years}年間<br>
+        想定利回り：年${(INVESTMENT.annualRate * 100).toFixed(1)}%
+    `;
+
+    renderModal(input, pension, shortfall, investment);
+}
+
+function renderModal(input, pension, shortfall, investment) {
+    const basicMonthly = pension.basicAnnual / 12;
+    const employeeMonthly = pension.employeeAnnual / 12;
+    const totalMonthly = pension.totalAnnual / 12;
+
+    let details = `
+        <p><strong>【基礎年金】</strong><br>
+        年額：約${manYen(pension.basicAnnual)}万円<br>
+        月額：約${manYen(basicMonthly)}万円<br>
+        今後の対象期間：約${pension.basicCoveredYears}年間</p>
+    `;
+
+    if (input.type === 2) {
+        details += `
+            <p><strong>【厚生年金の簡易推計】</strong><br>
+            年額：約${manYen(pension.employeeAnnual)}万円<br>
+            月額：約${manYen(employeeMonthly)}万円<br>
+            想定加入期間：約${pension.employeeWorkingYears}年間<br>
+            平均報酬月額：約${manYen(
+                pension.employeeAverageRewardMonthly
+            )}万円</p>
+        `;
+    }
+
+    details += `
+        <p><strong>【年金の合計】</strong><br>
+        年額：約${manYen(pension.totalAnnual)}万円<br>
+        月額：約${manYen(totalMonthly)}万円</p>
+
+        <p><strong>【老後の不足額】</strong><br>
+        生活費合計：約${manYen(shortfall.totalExpenses)}万円<br>
+        年金合計：約${manYen(shortfall.totalPension)}万円<br>
+        不足額：約${manYen(shortfall.shortfall)}万円</p>
+
+        <p><strong>【投資の計算】</strong><br>
+        積立期間：${investment.years}年間<br>
+        想定利回り：年${(INVESTMENT.annualRate * 100).toFixed(1)}%<br>
+        毎月の必要積立額：約${yen(investment.monthlyAmount)}円</p>
+
+        <p class="note">
+        ※年金・生活費・利回りを一定とした簡易計算です。
+        運用益が毎月一定に得られることを保証するものではありません。
+        </p>
+    `;
+
+    document.getElementById("modal-text").innerHTML = details;
+}
+
+
+/* ==================================================
+   ⑦ 全体の実行制御
+   それぞれのモジュールを順番につなぐ
+================================================== */
+
+function calculate(typeNum) {
+    // 1. 入力を検証
+    const input = readInputs(typeNum);
+    if (input === null) return;
+
+    // 2. 年金を計算
+    const pension = calculatePension(input);
+
+    // 3. 年金と生活費から不足額を計算
+    const shortfall = calculateShortfall(
+        input.livingCostYen,
+        pension.totalAnnual
+    );
+
+    // 4. 不足額を準備するための投資額を計算
+    const investment = calculateMonthlyInvestment(
+        shortfall.shortfall,
+        input.age
+    );
+
+    // 5. 結果を表示
+    renderResults(input, pension, shortfall, investment);
+
+    // 6. 結果画面へ
+    showScreen("result-screen");
+}
+</script>
+
+</body>
+</html>
